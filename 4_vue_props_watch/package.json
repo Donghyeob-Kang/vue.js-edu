@@ -1,5 +1,5 @@
 {
-  "name": "vue_fourth",
+  "name": "vue_props_watch",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -20,14 +20,6 @@
     "build": "webpack --watch",
     "dev": "webpack-dev-server --hot"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Donghyeob-Kang/vue-fourth.git"
-  },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Donghyeob-Kang/vue-fourth/issues"
-  },
-  "homepage": "https://github.com/Donghyeob-Kang/vue-fourth#readme"
+  "license": "ISC"
 }

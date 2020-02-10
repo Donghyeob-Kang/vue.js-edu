@@ -1,5 +1,5 @@
 {
-  "name": "vue_second",
+  "name": "vue_component",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -20,14 +20,6 @@
     "build": "webpack --watch",
     "dev": "webpack-dev-server --hot"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Donghyeob-Kang/vue-second.git"
-  },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Donghyeob-Kang/vue-second/issues"
-  },
-  "homepage": "https://github.com/Donghyeob-Kang/vue-second#readme"
+  "license": "ISC"
 }
