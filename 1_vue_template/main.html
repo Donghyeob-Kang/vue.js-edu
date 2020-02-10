@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+    <body>
+        <div id="app">{{ message }}</div>
+        <br />
+        <div id="btn"><button @click="showAlert">click!</button></div>
+        <br />
+        <div id="rand"><button @click="changeValue">click!</button>{{value}}</div>
+        <br />
+        <div id="html"><span v-html="message"></span></div>
+        <br />
+        <div id="bind"><a :href="naverLink">Naver</a></div>
+        <br />
+        <div id="if">
+            <span v-if="isShow">보이면 값이 true</span>
+            <span v-else-if="isShow == false">보이면 값이 false</span>
+        </div>
+        <div id="for">
+            <ul>
+                <li v-for="index in 10">
+                    {{ index }}
+                </li>
+                <li v-for="(number, index) in numbers">
+                    {{index}} : {{number}}
+                </li>
+                <li v-for="(item, key) in object">
+                    {{key}} : {{item}}
+                </li>
+            </ul>
+        </div>
+        <br />
+        <div id="forif">
+            <ul>
+                <li v-for="todo in todos" v-if="todo.isComplate">
+                    완료! {{todo.contents}}
+                </li>
+                <li v-for="todo in todos" v-if="!todo.isComplate">
+                    아직.. {{todo.contents}}
+                </li>
+            </ul>
+        </div>
+        <br />
+        <div id="key">
+            <button @click="changeSet">Change Set</button>
+            <div v-for="item in items" :key="item.key" @click="paint">
+                key: {{item.key}} / id: {{item.id}}
+            </div>
+        </div>
+        <br />
+        <div id="on">
+            <p>Counter : {{counter}}</p>
+            <button v-on:click="counter += 1">counter add</button>
+        </div>
+        <br />
+        <div id="moveEvent">
+            <div v-on:mousemove="trackingMouse" class="screen">
+                {{mouse.x}}, {{mouse.y}}
+            </div>
+        </div>
+        <script src="https://vuejs.org/js/vue.js"></script>
+        <script>
+            new Vue({
+                el: '#moveEvent',
+                data: {
+                    mouse: { x: 0, y: 0 }
+                },
+                methods: {
+                    trackingMouse: function(event) {
+                        this.mouse.x = event.clientX;
+                        this.mouse.y = event.clientY;
+                    }
+                }
+            });
+            new Vue({
+                el: '#on',
+                data: {
+                    counter: 0
+                }
+            });
+            new Vue({
+                el: '#key',
+                mounted() {
+                    this.changeSet();
+                },
+                data: {
+                    presetNumber: 0,
+                    items: [],
+                    preset: [
+                        [
+                            { id: 1, key: 1 },
+                            { id: 2, key: 1 },
+                            { id: 3, key: 2 },
+                            { id: 4, key: 3 },
+                            { id: 5, key: 5 },
+                            { id: 6, key: 8 }
+                        ],
+                        [
+                            { id: 7, key: 1 },
+                            { id: 8, key: 2 },
+                            { id: 9, key: 3 },
+                            { id: 10, key: 4 },
+                            { id: 11, key: 5 },
+                            { id: 12, key: 6 },
+                            { id: 13, key: 7 },
+                            { id: 14, key: 8 }
+                        ]
+                    ]
+                },
+                methods: {
+                    changeSet: function() {
+                        this.presetNumber = 1 - this.presetNumber;
+                        this.items = JSON.parse(JSON.stringify(this.preset[this.presetNumber]));
+                    },
+                    paint: function() {
+                        if (event.target.style.background) {
+                            event.target.style.background = null;
+                        } else {
+                            event.target.style.background = 'yellow';
+                        }
+                    }
+                }
+            });
+            new Vue({
+                el: '#forif',
+                data: {
+                    todos: [
+                        { contents: 'Vue.js', isComplate: false },
+                        { contents: 'Javascript', isComplate: true },
+                        { contents: 'React.js', isComplate: false }
+                    ]
+                }
+            });
+            new Vue({
+                el: '#for',
+                data: {
+                    numbers: [9, 8, 7, 6, 5, 4, 3, 2, 1],
+                    object: {
+                        firstName: 'Dong-hyeob',
+                        lastName: 'Kang',
+                        age: 29
+                    }
+                }
+            });
+            new Vue({
+                el: '#if',
+                data: { isShow: false }
+            });
+            new Vue({
+                el: '#bind',
+                data: {
+                    naverLink: 'https://www.naver.com'
+                }
+            });
+            new Vue({
+                el: '#html',
+                data: {
+                    message: 'Hello,<br>Vue!'
+                }
+            });
+            new Vue({
+                el: '#rand',
+                data: {
+                    value: 12345
+                },
+                methods: {
+                    changeValue: function() {
+                        this.value = Math.random();
+                    }
+                },
+                updated() {
+                    console.log('reloaded!');
+                }
+            });
+            new Vue({
+                el: '#app',
+                data: {
+                    message: 'Hello Vue!'
+                }
+                // beforeMount() {
+                //     alert('vue instance BeforeMount!');
+                // },
+                // mounted: () => {
+                //     alert('vue instance mount!');
+                // }
+            });
+            new Vue({
+                el: '#btn',
+                methods: {
+                    showAlert: () => {
+                        alert('깜짝!');
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app1">
+            <date></date>
+            <counter-component></counter-component>
+        </div>
+        <div id="app2">
+            <todo-component></todo-component>
+        </div>
+        <script src="https://vuejs.org/js/vue.js"></script>
+        <script type="text/x-template" id="todo-component">
+            <div>
+                <h1>2020년 목표</h1>
+                <ul>
+                    <li v-for="todo in todos">{{todo}}</li>
+                </ul>
+            </div>
+        </script>
+        <script>
+            const todoComponent = {
+                template: '#todo-component',
+                data: () => {
+                    return {
+                        todos: ['Vue.js', 'React.js', 'Typescript']
+                    };
+                }
+            };
+            Vue.component('date', {
+                template: '<div>{{now}}</div>',
+                data: () => {
+                    return {
+                        now: new Date()
+                    };
+                }
+            });
+            Vue.component('counter-component', {
+                template: '<button @click="counter += 1">{{counter}}</button>',
+                data: () => {
+                    return { counter: 0 };
+                }
+            });
+            new Vue({
+                el: '#app1'
+            });
+            new Vue({
+                el: '#app2',
+                components: {
+                    'todo-component': todoComponent
+                }
+            });
+        </script>
+    </body>
+</html>

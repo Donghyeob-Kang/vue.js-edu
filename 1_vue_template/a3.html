@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Document</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body>
+        <div id="root">
+            <word-relay start-word="가"></word-relay>
+            <word-relay start-word="나"></word-relay>
+            <word-relay start-word="다"></word-relay>
+        </div>
+        <script>
+            // 전역 컴포넌트
+            Vue.component('word-relay', {
+                template: `
+                    <div>
+                        <div>{{word}}</div>
+                        <form @submit="onSubmitButton">
+                            <input type="text" v-model="value" ref="answer" />
+                            <button type="submit">입력!</button>
+                        </form>
+                        <div>{{result}}</div>
+                    </div>
+                `,
+                props: ['startWord'],
+                data() {
+                    return {
+                        word: this.startWord,
+                        value: '',
+                        result: ''
+                    };
+                },
+                methods: {
+                    onSubmitButton(e) {
+                        e.preventDefault();
+                        if (this.word[this.word.length - 1] === this.value[0]) {
+                            this.result = '정답';
+                            this.word = this.value;
+                            this.value = '';
+                            this.$refs.answer.focus();
+                        } else {
+                            this.result = '오답';
+                            this.value = '';
+                            this.$refs.answer.focus();
+                        }
+                    }
+                }
+            });
+        </script>
+        <script>
+            // Vue instance
+            const app = new Vue({
+                el: '#root'
+            });
+        </script>
+    </body>
+</html>

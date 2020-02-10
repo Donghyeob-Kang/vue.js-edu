@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="filter">
+            <p>필터 미적용 : {{price}}</p>
+            <!-- data name | filters name -->
+            <p>필터 적용 : {{price | number}}</p>
+        </div>
+        <script src="https://vuejs.org/js/vue.js"></script>
+        <script>
+            new Vue({
+                el: '#filter',
+                data: {
+                    price: 24380
+                },
+                filters: {
+                    number: value => {
+                        return new Intl.NumberFormat().format(value);
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
