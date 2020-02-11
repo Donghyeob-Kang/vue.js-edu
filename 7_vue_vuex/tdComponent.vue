@@ -3,21 +3,50 @@
 </template>
 
 <script>
-    import { CLICK_CELL, SET_WINNER, CHANGE_TURN, RESET_GAME, NO_WINNER } from './store.js';
+    import { mapState } from "vuex";
+    import {
+        CLICK_CELL,
+        SET_WINNER,
+        CHANGE_TURN,
+        RESET_GAME,
+        NO_WINNER
+    } from "./store.js";
 
     export default {
         props: {
-            cellData: String,
+            // cellData: String,
             cellIndex: Number,
             rowIndex: Number
+        },
+        computed: {
+            // store의 state는 computed 속성을 사용해 가져옴
+            ...mapState({
+                tableData: state => state.tableData,
+                turn: state => state.turn,
+                cellData(state) {
+                    return state.tableData[this.rowIndex][this.cellIndex];
+                }
+            })
+            // cellData() {
+            //     return this.$store.state.tableData[this.rowIndex][this.cellIndex];
+            // },
+            // tableData() {
+            //     return this.$store.state.tableData;
+            // },
+            // turn() {
+            //     return this.$store.state.turn;
+            // }
         },
         methods: {
             onClickTd() {
                 if (this.cellData) {
                     return;
                 }
-
-                this.$store.commit(CLICK_CELL, { row: this.rowIndex, cell: this.cellIndex });
+                // store의 mutations는 commit 함수로 가져옴
+                this.$store.commit(CLICK_CELL, {
+                    row: this.rowIndex,
+                    cell: this.cellIndex
+                });
 
                 let win = false;
                 if (
@@ -52,11 +81,6 @@
                 if (win) {
                     this.$store.commit(SET_WINNER, this.turn);
                     this.$store.commit(RESET_GAME);
-                    this.tableData = [
-                        ['', '', ''],
-                        ['', '', ''],
-                        ['', '', '']
-                    ];
                 } else {
                     let all = true;
                     this.tableData.forEach(row => {
@@ -76,5 +100,5 @@
             }
         }
     };
-    console.log('tdComponent!!');
+    console.log("tdComponent!!");
 </script>

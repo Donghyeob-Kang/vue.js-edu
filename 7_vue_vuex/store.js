@@ -2,6 +2,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+// vue & vuex 연결
+Vue.use(Vuex); // this.$store
+// Vue.use(axios); //this.$axios
+
 export const SET_WINNER = 'SET_WINNER';
 export const CLICK_CELL = 'CLICK_CELL';
 export const CHANGE_TURN = 'CHANGE_TURN';
@@ -21,6 +25,9 @@ export default new Vuex.Store({
     },
     getters: {
         // vue computed와 비슷
+        // turnMessage() {
+        //     return this.turn + '님이 승리하셨습니다.';
+        // }
     },
     mutations: {
         // state를 수정할 때 사용. 동기적으로

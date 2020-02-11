@@ -10,8 +10,8 @@ module.exports = {
     },
     module: {
         rules: [
-            { test: /\.vue$/, loader: 'vue-loader'},
-            { test: /\.css$/, loader: ['vue-style-loader', 'css-loader']}
+            { test: /\.vue$/, loader: 'vue-loader' },
+            { test: /\.css$/, loader: ['vue-style-loader', 'css-loader'] }
         ]
     },
     plugins: [new VueLoaderPlugin()],

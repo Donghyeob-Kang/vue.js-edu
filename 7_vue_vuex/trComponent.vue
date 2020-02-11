@@ -1,9 +1,8 @@
 <template>
     <tr>
         <td-component
-            v-for="(cellData, index) in rowData"
+            v-for="(_, index) in rowData"
             :key="index"
-            :cell-data="cellData"
             :cell-index="index"
             :row-index="rowIndex"
         />
@@ -11,7 +10,7 @@
 </template>
 
 <script>
-    import tdComponent from './tdComponent.vue';
+    import tdComponent from "./tdComponent.vue";
 
     export default {
         components: {
@@ -19,11 +18,15 @@
         },
         data() {
             return {
-                parent: '내가 니 애비다.'
+                parent: "내가 니 애비다."
             };
         },
-        props: { rowData: Array, rowIndex: Number },
-        mounted() {}
+        computed: {
+            rowData() {
+                return this.$store.state.tableData[this.rowIndex];
+            }
+        },
+        props: { rowIndex: Number }
     };
-    console.log('trComponent!!');
+    console.log("trComponent!!");
 </script>

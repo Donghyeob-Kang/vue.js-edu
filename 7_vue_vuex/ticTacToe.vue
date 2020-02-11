@@ -1,28 +1,40 @@
 <template>
     <div>
         <div>{{ turn }}님의 턴입니다.</div>
-        <table-component :table-data="tableData" />
+        <table-component>
+            <!-- 배열이 제거될 요소가 있다면 v-for key값은 index로 주면 안됨 -->
+            <tr v-for="(rowData, rowIndex) in tableData" :key="rowIndex">
+                <td
+                    @click="onClickTd(rowIndex, cellIndex)"
+                    v-for="(cellData, cellIndex) in rowData"
+                    :key="cellIndex"
+                >{{ cellData }}</td>
+            </tr>
+        </table-component>
         <div v-if="winner">{{ winner }}님의 승리!</div>
     </div>
 </template>
 
 <script>
-    import tableComponent from './tableComponent.vue';
+    // root component & vuex 연결
+    import store from "./store";
+    import { mapState } from "vuex";
+    import tableComponent from "./tableComponent.vue";
 
     export default {
+        // store 선언
+        store,
         components: {
             tableComponent
         },
-        data() {
-            return {
-                tableData: [
-                    ['', '', ''],
-                    ['', '', ''],
-                    ['', '', '']
-                ],
-                turn: 'O',
-                winner: ''
-            };
+        computed: {
+            ...mapState(["winner", "turn", "tableData"])
+            // winner() {
+            //     return this.$store.state.winner;
+            // },
+            // turn() {
+            //     return this.$store.state.turn;
+            // }
         }
     };
 </script>

@@ -1,22 +1,19 @@
 <template>
     <table>
-        <tr-component
-            v-for="(rowData, index) in tableData"
-            :key="index"
-            :row-data="rowData"
-            :row-index="index"
-        />
+        <slot></slot>
     </table>
 </template>
 
 <script>
-    import trComponent from './trComponent.vue';
+    import store from "./store";
+    import trComponent from "./trComponent.vue";
 
     export default {
-        components: {
-            trComponent
-        },
-        props: { tableData: Array }
+        computed: {
+            tableData() {
+                return this.$store.state.tableData;
+            }
+        }
     };
-    console.log('tableComponent!!');
+    console.log("tableComponent!!");
 </script>
