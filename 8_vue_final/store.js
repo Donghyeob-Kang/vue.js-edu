@@ -12,13 +12,13 @@ export const NOMALIZE_CELL = 'NOMALIZE_CELL';
 export const INCREMENT_TIMER = 'INCREMENT_TIMER';
 
 export const CODE = {
-    MINE: -7,
     NORMAL: -1,
     QUESTION: -2,
     FLAG: -3,
     QUESTION_MINE: -4,
     FLAG_MINE: -5,
     CLICKED_MINE: -6,
+    MINE: -7,
     OPENED: 0
 };
 
@@ -60,6 +60,7 @@ export default new Vuex.Store({
             mine: 0
         },
         timer: 0,
+        halted: true,
         result: ''
     },
     getters: {},
@@ -69,13 +70,69 @@ export default new Vuex.Store({
             // state.data.row = row 배열 index 접근할때와 비슷하게 화면변경이 안될수있음
             // Vue.set(state.data, 'row', row)
             state.tableData = plantMine(row, cell, mine);
+            state.timer = 0;
+            state.halted = false;
         },
-        [OPEN_CELL](state) {},
-        [CLICK_MINE](state) {},
-        [FLAG_CELL](state) {},
-        [QUESTION_CELL](state) {},
-        [NOMALIZE_CELL](state) {},
-        [INCREMENT_TIMER](state) {}
+        [OPEN_CELL](state, { row, cell }) {
+            const checkAround = () => {
+                let around = [];
+                if (state.tableData[row - 1]) {
+                    around = around.concat([
+                        state.tableData[row - 1][cell - 1],
+                        state.tableData[row - 1][cell],
+                        state.tableData[row - 1][cell + 1]
+                    ]);
+                }
+                around = around.concat([
+                    state.tableData[row][cell - 1],
+                    state.tableData[row][cell],
+                    state.tableData[row][cell + 1]
+                ]);
+                if (state.tableData[row + 1]) {
+                    around = around.concat([
+                        state.tableData[row + 1][cell - 1],
+                        state.tableData[row + 1][cell],
+                        state.tableData[row + 1][cell + 1]
+                    ]);
+                }
+                // v내에 around array elements를 담고 return에 걸리는 값들을 출력
+                const counted = around.filter(v => {
+                    return [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v);
+                });
+                return counted.length;
+            };
+
+            const count = checkAround();
+            Vue.set(state.tableData[row], cell, count);
+        },
+        [CLICK_MINE](state, { row, cell }) {
+            state.halted = true;
+            Vue.set(state.tableData[row], cell, CODE.CLICKED_MINE);
+        },
+        [FLAG_CELL](state, { row, cell }) {
+            if (state.tableData[row][cell] === CODE.MINE) {
+                Vue.set(state.tableData[row], cell, CODE.FLAG_MINE);
+            } else {
+                Vue.set(state.tableData[row], cell, CODE.FLAG);
+            }
+        },
+        [QUESTION_CELL](state, { row, cell }) {
+            if (state.tableData[row][cell] === CODE.FLAG_MINE) {
+                Vue.set(state.tableData[row], cell, CODE.QUESTION_MINE);
+            } else {
+                Vue.set(state.tableData[row], cell, CODE.QUESTION);
+            }
+        },
+        [NOMALIZE_CELL](state, { row, cell }) {
+            if (state.tableData[row][cell] === CODE.QUESTION_MINE) {
+                Vue.set(state.tableData[row], cell, CODE.MINE);
+            } else {
+                Vue.set(state.tableData[row], cell, CODE.NORMAL);
+            }
+        },
+        [INCREMENT_TIMER](state) {
+            state.timer += 1;
+        }
     },
     actions: {}
 });
