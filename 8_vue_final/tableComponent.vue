@@ -16,7 +16,7 @@
 
 <script>
     import { mapState } from 'vuex';
-    import { CODE, OPEN_CELL, CLICK_MINE, FLAG_CELL, QUESTION_CELL, NOMALIZE_CELL } from './store';
+    import { CODE, OPEN_CELL, CLICK_MINE, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL } from './store';
 
     export default {
         computed: {
@@ -53,7 +53,7 @@
                 return (row, cell) => {
                     switch (this.$store.state.tableData[row][cell]) {
                         case CODE.MINE:
-                            return 'X';
+                            return '';
                         case CODE.NORMAL:
                             return '';
                         case CODE.FLAG_MINE:
@@ -104,7 +104,7 @@
                         return;
                     case CODE.QUESTION_MINE:
                     case CODE.QUESTION:
-                        this.$store.commit(NOMALIZE_CELL, { row, cell });
+                        this.$store.commit(NORMALIZE_CELL, { row, cell });
                         return;
                     default:
                         return;

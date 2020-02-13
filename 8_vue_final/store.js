@@ -8,7 +8,7 @@ export const OPEN_CELL = 'OPEN_CELL';
 export const CLICK_MINE = 'CLICK_MINE';
 export const FLAG_CELL = 'FLAG_CELL';
 export const QUESTION_CELL = 'QUESTION_CELL';
-export const NOMALIZE_CELL = 'NOMALIZE_CELL';
+export const NORMALIZE_CELL = 'NOMALIZE_CELL';
 export const INCREMENT_TIMER = 'INCREMENT_TIMER';
 
 export const CODE = {
@@ -66,44 +66,82 @@ export default new Vuex.Store({
     getters: {},
     mutations: {
         [START_GAME](state, { row, cell, mine }) {
-            state.data = { row, cell, mine };
-            // state.data.row = row 배열 index 접근할때와 비슷하게 화면변경이 안될수있음
-            // Vue.set(state.data, 'row', row)
+            state.data = {
+                row,
+                cell,
+                mine
+            };
             state.tableData = plantMine(row, cell, mine);
             state.timer = 0;
             state.halted = false;
+            state.openedCount = 0;
+            state.result = '';
         },
         [OPEN_CELL](state, { row, cell }) {
-            const checkAround = () => {
+            let openedCount = 0;
+            const checked = [];
+            function checkAround(row, cell) {
+                // 주변 8칸 검색
+                const checkRowOrCellIsUndefined = row < 0 || row >= state.tableData.length || cell < 0 || cell >= state.tableData[0].length;
+                if (checkRowOrCellIsUndefined) {
+                    return;
+                }
+                // OPENED, FLAG, QUESTION과 MINE일 경우 return
+                if ([CODE.OPENED, CODE.FLAG, CODE.FLAG_MINE, CODE.QUESTION_MINE, CODE.QUESTION].includes(state.tableData[row][cell])) {
+                    return;
+                }
+                if (checked.includes(row + '/' + cell)) {
+                    return;
+                } else {
+                    checked.push(row + '/' + cell);
+                }
                 let around = [];
                 if (state.tableData[row - 1]) {
-                    around = around.concat([
-                        state.tableData[row - 1][cell - 1],
-                        state.tableData[row - 1][cell],
-                        state.tableData[row - 1][cell + 1]
-                    ]);
+                    around = around.concat([state.tableData[row - 1][cell - 1], state.tableData[row - 1][cell], state.tableData[row - 1][cell + 1]]);
                 }
-                around = around.concat([
-                    state.tableData[row][cell - 1],
-                    state.tableData[row][cell],
-                    state.tableData[row][cell + 1]
-                ]);
+                around = around.concat([state.tableData[row][cell - 1], state.tableData[row][cell + 1]]);
                 if (state.tableData[row + 1]) {
-                    around = around.concat([
-                        state.tableData[row + 1][cell - 1],
-                        state.tableData[row + 1][cell],
-                        state.tableData[row + 1][cell + 1]
-                    ]);
+                    around = around.concat([state.tableData[row + 1][cell - 1], state.tableData[row + 1][cell], state.tableData[row + 1][cell + 1]]);
                 }
-                // v내에 around array elements를 담고 return에 걸리는 값들을 출력
-                const counted = around.filter(v => {
+                const counted = around.filter(function(v) {
                     return [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v);
                 });
-                return counted.length;
-            };
-
-            const count = checkAround();
-            Vue.set(state.tableData[row], cell, count);
+                if (counted.length === 0 && row > -1) {
+                    // 주변 8칸에 지뢰가 없는 경우
+                    const near = [];
+                    if (row - 1 > -1) {
+                        near.push([row - 1, cell - 1]);
+                        near.push([row - 1, cell]);
+                        near.push([row - 1, cell + 1]);
+                    }
+                    near.push([row, cell - 1]);
+                    near.push([row, cell + 1]);
+                    if (row + 1 < state.tableData.length) {
+                        near.push([row + 1, cell - 1]);
+                        near.push([row + 1, cell]);
+                        near.push([row + 1, cell + 1]);
+                    }
+                    near.forEach(n => {
+                        if (state.tableData[n[0]][n[1]] !== CODE.OPENED) {
+                            checkAround(n[0], n[1]);
+                        }
+                    });
+                }
+                if (state.tableData[row][cell] === CODE.NORMAL) {
+                    openedCount += 1;
+                }
+                Vue.set(state.tableData[row], cell, counted.length);
+            }
+            checkAround(row, cell);
+            let halted = false;
+            let result = '';
+            if (state.data.row * state.data.cell - state.data.mine === state.openedCount + openedCount) {
+                halted = true;
+                result = `${state.timer}초만에 승리.`;
+            }
+            state.openedCount += openedCount;
+            state.halted = halted;
+            state.result = result;
         },
         [CLICK_MINE](state, { row, cell }) {
             state.halted = true;
@@ -123,7 +161,7 @@ export default new Vuex.Store({
                 Vue.set(state.tableData[row], cell, CODE.QUESTION);
             }
         },
-        [NOMALIZE_CELL](state, { row, cell }) {
+        [NORMALIZE_CELL](state, { row, cell }) {
             if (state.tableData[row][cell] === CODE.QUESTION_MINE) {
                 Vue.set(state.tableData[row], cell, CODE.MINE);
             } else {
